@@ -38,14 +38,14 @@
 		CREATE TABLE Users (
 			username 	VARCHAR(25) NOT NULL,
 			password 	VARCHAR(25) NOT NULL,
-			uid 		INT(16) NOT NULL,
+			uid 		INT(16) NOT NULL AUTO_INCREMENT,
 			privilege 	INT DEFAULT 0,
 			userBio 	VARCHAR(2048),
 			PRIMARY KEY (uid)
 		);";
 	$makeDB .= "
 		CREATE TABLE Posts (
-			postid 		INT NOT NULL,
+			postid 		INT NOT NULL AUTO_INCREMENT,
 			ownerid 	INT(16) NOT NULL,
 			title 		VARCHAR(64) NOT NULL,
 			postTime 	DATE,
@@ -57,7 +57,7 @@
 		
 	$makeDB .= "
 		CREATE TABLE PostComments (
-			commentid 	INT NOT NULL,
+			commentid 	INT NOT NULL AUTO_INCREMENT,
 			ownerid 	INT(16) NOT NULL,
 			postid 		INT(16) NOT NULL,
 			postTime 	DATE,
@@ -74,7 +74,7 @@
 	// PostTags is the table that say which tags belong to which tables
 	$makeDB .= "
 		CREATE TABLE MetaTags (
-			tagid 		INT NOT NULL,
+			tagid 		INT NOT NULL AUTO_INCREMENT,
 			name 		VARCHAR(32),
 			PRIMARY KEY (tagid)
 		);";
@@ -95,37 +95,39 @@
 	// with dropping tables but in the opposite order
 	
 	//Populate user tables
+	//note here we don't need to insert uid for user and privilege for
+	//basic accounts
 	$populateDB .= 
 		"INSERT INTO Users 
-		(username, password, uid, privilege, userBio) VALUES
-		('Admin', 'root123', 1, 2, 'Hello I am an administrator for the website.');";
+		(username, password, privilege, userBio) VALUES
+		('Admin', 'root123', 2, 'Hello I am an administrator for the website.');";
 	$populateDB .= 
 		"INSERT INTO Users 
-		(username, password, uid, privilege, userBio) VALUES
-		('Moderator', 'PASSWORD', 2, 1, 'This is the moderator profile.');";
+		(username, password, privilege, userBio) VALUES
+		('Moderator', 'PASSWORD', 1, 'This is the moderator profile.');";
 	$populateDB .= 
 		"INSERT INTO Users 
-		(username, password, uid, privilege, userBio) VALUES
-		('Bob', '123', 3, 0, 'Hello my name is Bob and I like to talk about etc etc etc...');";
+		(username, password, userBio) VALUES
+		('Bob', '123', 'Hello my name is Bob and I like to talk about etc etc etc...');";
 	
 	//Populate MetTags table
-	$populateDB .= "INSERT INTO MetaTags (tagid, name) VALUES(1, 'video games');";
-	$populateDB .= "INSERT INTO MetaTags (tagid, name) VALUES(2, 'computers');";	
-	$populateDB .= "INSERT INTO MetaTags (tagid, name) VALUES(3, 'crypto');";
+	$populateDB .= "INSERT INTO MetaTags (name) VALUES('video games');";
+	$populateDB .= "INSERT INTO MetaTags (name) VALUES('computers');";	
+	$populateDB .= "INSERT INTO MetaTags (name) VALUES('crypto');";
 		
 	//Populate Posts table
 	$populateDB .= 
 		"INSERT INTO Posts 
-		(postid, ownerid, title, postTime, lastUpdate, postContent) VALUES
-		(1, 1, 'Hello world', '2022-1-02 15:20:00', CURDATE(), 'This is the very first post');";
+		(ownerid, title, postTime, lastUpdate, postContent) VALUES
+		(1, 'Hello world', '2022-1-02 15:20:00', CURDATE(), 'This is the very first post');";
 	$populateDB .= 
 		"INSERT INTO Posts 
-		(postid, ownerid, title, postTime, lastUpdate, postContent) VALUES
-		(2, 1, 'Roblox', '2022-1-05 08:05:00', '2022-1-05 9:15:00', 'I like to play Roblox');";
+		(ownerid, title, postTime, lastUpdate, postContent) VALUES
+		(1, 'Roblox', '2022-1-05 08:05:00', '2022-1-05 9:15:00', 'I like to play Roblox');";
 	$populateDB .= 
 		"INSERT INTO Posts 
-		(postid, ownerid, title, postTime, lastUpdate, postContent) VALUES
-		(3, 3, 'I stole 8 billion worth of bitcoin', '2022-1-10 22:45:00', '2022-1-10 22:45:00', 'This is how I stole 8 billion in bitcoin. Do not tell the IRS.etc...');";
+		(ownerid, title, postTime, lastUpdate, postContent) VALUES
+		(3, 'I stole 8 billion worth of bitcoin', '2022-1-10 22:45:00', '2022-1-10 22:45:00', 'This is how I stole 8 billion in bitcoin. Do not tell the IRS.etc...');";
 	
 	//Populate PostTags
 	$populateDB .= "INSERT INTO PostTags (tagid, postid) VALUES (1, 2);";
@@ -135,24 +137,24 @@
 	//Populate PostComments
 	$populateDB .= "
 		INSERT INTO PostComments
-		(commentid, ownerid, postid, postTime, lastUpdate, postContent) VALUES
-		(1, 2, 1, '2022-1-02 15:26:00', '2022-1-02 15:27:00', 'Hello World. Note: edited');";
+		(ownerid, postid, postTime, lastUpdate, postContent) VALUES
+		(2, 1, '2022-1-02 15:26:00', '2022-1-02 15:27:00', 'Hello World. Note: edited');";
 	$populateDB .= "
 		INSERT INTO PostComments
-		(commentid, ownerid, postid, postTime, lastUpdate, postContent) VALUES
-		(2, 3, 1, '2022-1-02 17:26:00', '2022-1-02 17:26:00', 'Hello also!!!!!!');";
+		(ownerid, postid, postTime, lastUpdate, postContent) VALUES
+		(3, 1, '2022-1-02 17:26:00', '2022-1-02 17:26:00', 'Hello also!!!!!!');";
 	$populateDB .= "
 		INSERT INTO PostComments
-		(commentid, ownerid, postid, postTime, lastUpdate, postContent) VALUES
-		(3, 3, 2, '2022-1-05 12:56:00', '2022-1-02 12:56:00', 'I also like to play Roblox.');";
+		(ownerid, postid, postTime, lastUpdate, postContent) VALUES
+		(3, 2, '2022-1-05 12:56:00', '2022-1-02 12:56:00', 'I also like to play Roblox.');";
 	$populateDB .= "
 		INSERT INTO PostComments
-		(commentid, ownerid, postid, postTime, lastUpdate, postContent) VALUES
-		(4, 1, 3, '2022-1-12 08:36:00', '2022-1-12 08:36:00', 'I am telling the IRS.');";
+		(ownerid, postid, postTime, lastUpdate, postContent) VALUES
+		(1, 3, '2022-1-12 08:36:00', '2022-1-12 08:36:00', 'I am telling the IRS.');";
 	$populateDB .= "
 		INSERT INTO PostComments
-		(commentid, ownerid, postid, postTime, lastUpdate, postContent) VALUES
-		(5, 2, 3, '2022-1-12 08:39:00', '2022-1-12 08:39:00', 'Haha very funny!');";	
+		(ownerid, postid, postTime, lastUpdate, postContent) VALUES
+		(2, 3, '2022-1-12 08:39:00', '2022-1-12 08:39:00', 'Haha very funny!');";	
 	
 	run_queries($mysqli, $populateDB, 'Populated tables');
 	
