@@ -146,7 +146,7 @@
 	$populateDB .= "
 		INSERT INTO PostComments
 		(ownerid, postid, postTime, lastUpdate, postContent) VALUES
-		(3, 2, '2022-1-05 12:56:00', '2022-1-02 12:56:00', 'I also like to play Roblox.');";
+		(3, 2, '2022-1-05 12:56:00', '2022-1-06 12:06:00', 'I also like to play Roblox.');";
 	$populateDB .= "
 		INSERT INTO PostComments
 		(ownerid, postid, postTime, lastUpdate, postContent) VALUES
