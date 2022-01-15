@@ -19,7 +19,7 @@
 	$_SESSION['uid'] = $uid;
 	
 	$mysqli = new mysqli("localhost", "root", "password", "MyDatabase");
-	if($msqli -> connect_erno){
+	if($mysqli -> connect_erno){
 		echo 'failed to connect to MySQL '.$mysqli -> connect_error;
 		exit();
 	}
@@ -27,26 +27,27 @@
 	
 	
 	//Query to get the post
-	$sql = "
+	$postQuery = "
 	SELECT 
+		u.uid,
+		u.username,
 		p.title,
 		DATE_FORMAT(p.postTime, \"%b %d, %Y at %r \") AS \"time\",
 		DATE_FORMAT(p.lastUpdate, \"%b %d, %Y at %r \") AS \"lastUpdate\",
-		p.postContent,
-		u.username 
+		p.postContent
 	FROM POSTS p 
 		INNER JOIN Users u
 		ON u.uid = p.ownerid
 	WHERE p.postid = ".$postid.";";
-	$result = $mysqli -> query($sql);
+	$postResult = $mysqli -> query($postQuery);
 	
 	
 	//display post
-	if($result -> num_rows > 0) {
-		$row = $result -> fetch_assoc();
+	if($postResult -> num_rows > 0) {
+		$row = $postResult -> fetch_assoc();
 		
 		echo $row['title'].'<br>';
-		echo 'by: '.$row['username'].' (insert link to user profile page)<br>';
+		echo 'by: <a href="viewprofile.php?user='.$row['uid'].'">'.$row['username'].'</a><br>';
 		echo 'Posted at '.$row['time'].'<hr>';
 		echo $row['postContent'].'<br>';
 		echo '<i>Last Update at '.$row['lastUpdate'].'</i><hr>';
@@ -59,18 +60,18 @@
 	
 	
 	//Query to get the tags related to the post
-	$sql = "
+	$tagQuery = "
 	SELECT p.tagid, m.name FROM PostTags p
 		INNER JOIN MetaTags m
 		ON p.tagid = m.tagid
 	WHERE p.postid = ".$postid.";";
-	$result = $mysqli -> query($sql);
+	$tagResult = $mysqli -> query($tagQuery);
 	
 	
 	//display the tags
 	$tags = 'Tags: ';
-	if($result -> num_rows > 0) {
-		while($row = $result -> fetch_assoc()) {
+	if($tagResult -> num_rows > 0) {
+		while($row = $tagResult -> fetch_assoc()) {
 				$tags .= $row['name'].' | ';
 		}
 		$tags = substr($tags, 0, -2);
@@ -80,8 +81,9 @@
 	echo $tags.'<br>';
 	
 	//Query to get the comments
-	$sql = "
+	$commentQuery = "
 	SELECT 
+		u.uid,
 		u.username,
 		p.postContent, 
 		DATE_FORMAT(p.postTime, \"%b %d, %Y %r \") AS \"time\",
@@ -90,17 +92,17 @@
 		INNER JOIN Users u
 		ON u.uid = p.ownerid
 	WHERE postid = ".$postid.";";
-	$result = $mysqli -> query($sql);
+	$commentResult = $mysqli -> query($commentQuery);
 	
 	//display the comments
 	echo 'Comments:<hr>';
 	
-	if($result -> num_rows > 0) {
-		while($row = $result -> fetch_assoc()) {
+	if($commentResult -> num_rows > 0) {
+		while($row = $commentResult -> fetch_assoc()) {
 			
 			echo $row['time'].'<br>';
 			echo $row['postContent'].'<br>';
-			echo 'by: '.$row['username'].'<br>';
+			echo 'by: <a href="viewprofile.php?user='.$row['uid'].'">'.$row['username'].'</a><br>';
 			
 			//basically check if post was updated, display update time
 			if(strcmp('none', $row['lastUpdate']) != 0 and 
