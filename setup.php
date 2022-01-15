@@ -48,8 +48,8 @@
 			postid 		INT NOT NULL AUTO_INCREMENT,
 			ownerid 	INT(16) NOT NULL,
 			title 		VARCHAR(64) NOT NULL,
-			postTime 	DATE,
-			lastUpdate 	DATE,
+			postTime 	DATETIME,
+			lastUpdate 	DATETIME,
 			postContent VARCHAR(4096) NOT NULL,
 			PRIMARY KEY (postid),
 			FOREIGN KEY (ownerid) REFERENCES Users (uid)
@@ -60,8 +60,8 @@
 			commentid 	INT NOT NULL AUTO_INCREMENT,
 			ownerid 	INT(16) NOT NULL,
 			postid 		INT(16) NOT NULL,
-			postTime 	DATE,
-			lastUpdate 	DATE,
+			postTime 	DATETIME,
+			lastUpdate 	DATETIME,
 			postContent VARCHAR(2048) NOT NULL,
 			PRIMARY KEY (commentid),
 			FOREIGN KEY (ownerid) REFERENCES Users (uid),
@@ -138,7 +138,7 @@
 	$populateDB .= "
 		INSERT INTO PostComments
 		(ownerid, postid, postTime, lastUpdate, postContent) VALUES
-		(2, 1, '2022-1-02 15:26:00', '2022-1-02 15:27:00', 'Hello World. Note: edited');";
+		(2, 1, '2022-1-02 15:26:00', '2022-1-02 15:37:00', 'Hello World. Note: edited');";
 	$populateDB .= "
 		INSERT INTO PostComments
 		(ownerid, postid, postTime, lastUpdate, postContent) VALUES
@@ -150,11 +150,15 @@
 	$populateDB .= "
 		INSERT INTO PostComments
 		(ownerid, postid, postTime, lastUpdate, postContent) VALUES
-		(1, 3, '2022-1-12 08:36:00', '2022-1-12 08:36:00', 'I am telling the IRS.');";
+		(1, 3, '2022-1-12 08:36:00', '2022-1-12 09:36:00', 'I am telling the IRS.');";
 	$populateDB .= "
 		INSERT INTO PostComments
 		(ownerid, postid, postTime, lastUpdate, postContent) VALUES
-		(2, 3, '2022-1-12 08:39:00', '2022-1-12 08:39:00', 'Haha very funny!');";	
+		(2, 3, '2022-1-12 08:39:00', '2022-1-12 08:39:00', 'Haha very funny!');";
+	$populateDB .= "
+		INSERT INTO PostComments
+		(ownerid, postid, postTime, postContent) VALUES
+		(2, 3, '2022-1-12 09:15:00', 'This is a comment without update time.');";	
 	
 	run_queries($mysqli, $populateDB, 'Populated tables');
 	
