@@ -26,13 +26,15 @@
 	$pass = $_POST['password'];
 	
 	$result = $SQLi -> query("SELECT * FROM Users");
+
+	// code below caldwell-matthew
 	if($result -> num_rows > 0) {
-    while($row = $result -> fetch_assoc()) {
-     // echo "Username: ".$uid.' '.$row["username"].':'.$pass.' '.$row["password"].'<br>';
-      if((strcmp($uid, $row["username"]) && strcmp($pass, $row["password"])) == 0) {
-        session_start();
-        $_SESSION['uid'] = $uid;
-        header('Location: logstatus.php');
+        while($row = $result -> fetch_assoc()) {
+        // echo "Username: ".$uid.' '.$row["username"].':'.$pass.' '.$row["password"].'<br>';
+        if((strcmp($uid, $row["username"]) && strcmp($pass, $row["password"])) == 0) {
+          session_start();
+          $_SESSION['uid'] = $uid;
+          header('Location: logstatus.php');
       }
     }
     echo 'Invalid username and/or password.';
