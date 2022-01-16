@@ -13,49 +13,50 @@
 		exit_process();
     }
 	
-	$servername = 'localhost';
-	$username = 'root';
-    $password = 'password';
-    $dbname = 'mydatabase';
-    $SQli = new mysqli($servername, $username, $password, $dbname);
-
-    if($SQLi -> connect_errno) {
-      echo 'mySQL CONNECTION FAILURE: '.$SQLi -> connect_errno;
-      exit();
-    }
-
-    $uname = trim(strtolower($_POST['username']));
+    $username = trim(strtolower($_POST['username']));
 	$email = trim($_POST['email']);
 	
 	if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
 		echo 'invalid email';
 		exit_process();
 	}
-    $pass = $_POST['password'];
+    $password = $_POST['password'];
 	
-	"INSERT INTO Users 
-		(username, email, password, userBio) VALUES
-		('Bob', 'bob@hotmail.com', '123',
-		'Hello my name is Bob and I like to talk about etc etc etc...');";
+	$SQLi = new mysqli('localhost', 'root', 'password','mydatabase');
+
+    if($SQLi -> connect_errno) {
+      echo 'mySQL CONNECTION FAILURE: '.$SQLi -> connect_errno;
+      exit_process();
+    }
 	
-	/*
-	$query = sprintf(
-	"INSERT INTO Users (username, email, password) VALUES ('%s', '%s', '%s');", 
-	$uname, $email, $pass);*/
+	$testUsername = sprintf("SELECT uid FROM Users WHERE LOWER(username) LIKE '%s';",
+		$SQLi->real_escape_string($username));
+	$result = $SQLi -> query($testUsername);
 	
-	$query = "
-	INSERT INTO Users 
-	(username, email, password) VALUES 
-	('".$uname."', '".$email."', '".$pass."');";
-	
-	echo $query." Query does not seem to run!<br>";
-	
-	if(!mysqli_query($SQLi, $query)){
-		echo "query error: ". mysqli_error($SQLi);
+	if($result -> num_rows > 0){
+		echo 'Sorry the username "'.$username.'" is already taken by another user<br>';
+		$SQLi->close();
+		exit_process();
 	}
 	
-	echo 'You have successfully created your account<br>';
-	echo '<a href="loginpage.php">login page</a>';
+	$testEmail = sprintf("SELECT uid FROM Users WHERE LOWER(email) LIKE '%s';",
+	$SQLi->real_escape_string($email));
+	$result = $SQLi -> query($testEmail);
+	if($result -> num_rows > 0){
+		echo 'The email "'.$email.'" is already in use<br>';
+		$SQLi->close();
+		exit_process();
+	}
+	
+	$query = sprintf(
+	"INSERT INTO Users (username, email, password) VALUES ('%s', '%s', '%s');", 
+	$SQLi->real_escape_string($username), $SQLi->real_escape_string($email), 
+	$SQLi->real_escape_string($password));
+		
+	$SQLi-> query($query);
+	
+	echo 'Welcome. You have successfully created your account '.$username.'!<br>';
+	echo '<a href="loginpage.html">login page</a>';
 	
 	$SQLi->close();
 	
