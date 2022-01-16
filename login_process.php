@@ -25,7 +25,7 @@
 	$uid = strtolower($_POST['username']);
 	$pass = $_POST['password'];
 	
-	$result = $SQLcon -> query("SELECT * FROM Users");
+	$result = $SQLi -> query("SELECT * FROM Users");
 	if($result -> num_rows > 0) {
     while($row = $result -> fetch_assoc()) {
      // echo "Username: ".$uid.' '.$row["username"].':'.$pass.' '.$row["password"].'<br>';
