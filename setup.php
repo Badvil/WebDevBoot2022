@@ -37,10 +37,13 @@
 	$makeDB .= "
 		CREATE TABLE Users (
 			username 	VARCHAR(25) NOT NULL,
+			email		VARCHAR(36) NOT NULL,
 			password 	VARCHAR(25) NOT NULL,
 			uid 		INT(16) NOT NULL AUTO_INCREMENT,
 			privilege 	INT DEFAULT 0,
-			userBio 	VARCHAR(2048),
+			userBio 	VARCHAR(2048) DEFAULT '',
+			CONSTRAINT unique_username UNIQUE (username),
+			CONSTRAINT unique_email UNIQUE (email),
 			PRIMARY KEY (uid)
 		);";
 	$makeDB .= "
@@ -99,16 +102,16 @@
 	//basic accounts
 	$populateDB .= 
 		"INSERT INTO Users 
-		(username, password, privilege, userBio) VALUES
-		('Admin', 'root123', 2, 'Hello I am an administrator for the website.');";
+		(username, email, password, privilege, userBio) VALUES
+		('Admin', 'admin@admin.com', 'root123', 2, 'Hello I am an administrator for the website.');";
 	$populateDB .= 
 		"INSERT INTO Users 
-		(username, password, privilege, userBio) VALUES
-		('Moderator', 'PASSWORD', 1, 'This is the moderator profile.');";
+		(username,  email, password, privilege, userBio) VALUES
+		('Moderator', 'modman@gmail.com', 'PASSWORD', 1, 'This is the moderator profile.');";
 	$populateDB .= 
 		"INSERT INTO Users 
-		(username, password, userBio) VALUES
-		('Bob', '123', 'Hello my name is Bob and I like to talk about etc etc etc...');";
+		(username, email, password, userBio) VALUES
+		('Bob', 'bob@hotmail.com', '123', 'Hello my name is Bob and I like to talk about etc etc etc...');";
 	
 	//Populate MetTags table
 	$populateDB .= "INSERT INTO MetaTags (name) VALUES('video games');";
