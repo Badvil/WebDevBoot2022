@@ -27,7 +27,7 @@
 	
 	$result = $SQLi -> query("SELECT * FROM Users");
 
-	// code below caldwell-matthew
+	// code below by caldwell-matthew
 	if($result -> num_rows > 0) {
         while($row = $result -> fetch_assoc()) {
         // echo "Username: ".$uid.' '.$row["username"].':'.$pass.' '.$row["password"].'<br>';
