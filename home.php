@@ -20,22 +20,42 @@
 	echo '<a href="logout_process.php">logout</a><br><br>';
 	
 	echo '<a href="createpost.php">create post</a><br><br>';
-	echo 'My recent posts:<hr>';
+	echo 'My 5 recent posts:<hr>';
 	$query = "
 	SELECT 
-		p.postid, p.title AS \"title\", u.username,
+		p.postid, p.title AS \"title\",
 		DATE_FORMAT(p.postTime, \"%b %d, %Y at %r \") AS \"time\"
 	FROM Posts p 
-		INNER JOIN Users u
-		ON u.uid = p.ownerid
 	WHERE p.ownerid = ".$uid."
-	ORDER BY p.postTime
+	ORDER BY p.postTime DESC
 	LIMIT 5;";
 	$result = $mysqli -> query($query);
 	
 	if ($result -> num_rows > 0) {
 		while($row = $result -> fetch_assoc()) {
 			echo '<a href ="post.php?postid='.$row['postid'].'">'.$row['title'].'</a><br>';
+			echo 'Posted at '.$row['time'].'<hr>';
+		}
+	} else {
+		echo 'No posts yet...<hr>';
+	}
+	
+	echo '<br><br>Newest Posts:<hr>';
+	$query = "
+	SELECT 
+		p.postid, p.title AS \"title\", u.uid AS \"uid\", u.username,
+		DATE_FORMAT(p.postTime, \"%b %d, %Y at %r \") AS \"time\"
+	FROM Posts p 
+		INNER JOIN Users u
+		ON u.uid = p.ownerid
+	ORDER BY p.postTime DESC
+	LIMIT 15;";
+	$result = $mysqli -> query($query);
+	
+	if ($result -> num_rows > 0) {
+		while($row = $result -> fetch_assoc()) {
+			echo '<a href ="post.php?postid='.$row['postid'].'">'.$row['title'].'</a><br>';
+			echo 'by: <a href ="viewprofile.php?profileid='.$row['uid'].'">'.$row['username'].'</a><br>';
 			echo 'Posted at '.$row['time'].'<hr>';
 		}
 	} else {
@@ -67,19 +87,24 @@
 	
 	$result = $mysqli->query($query);
 	
+	/*
+	echo 'Search Results<hr><br>';
 	//temp display
 	if ($result->num_rows > 0) {
 		while($row = $result->fetch_assoc()) {
-				//echo $row[0].'<br>';
-			foreach($row as $cname => $cvalue){
-				echo $cname.': '.$cvalue.'|   ';
+			if(strcmp($row['title'], 'user') == 0){
+				echo 'User: <a href ="post.php?postid='.$row['postid'].'">'.$row['title'].'</a><hr>';
+			} else {
+				echo '<a href ="post.php?postid='.$row['postid'].'">'.$row['title'].'</a><br>';
+				echo 'by: <a href ="viewprofile.php?profileid='.$row['uid'].'">'.$row['username'].'</a><br>';
+				echo 'Posted at '.$row['time'].'<hr>';
 			}
-			echo'<br>';
 		}
 	} else {
 		echo 'no results found for: <br>'.$query.'<br>';
 	}
 	echo '<br>';
+	*/
 	
 	//then for each post display the tags with this query
 	$sql = "
@@ -87,5 +112,13 @@
 		INNER JOIN MetaTags m
 		ON p.tagid = m.tagid
 	WHERE p.postid = 1;";
+	
+	echo '<br>View Users:<br><br>';
+	$result = $mysqli->query("SELECT * FROM Users;");
+	if ($result->num_rows > 0) {
+		while($row = $result->fetch_assoc()) {
+			echo 'User: <a href ="post.php?postid='.$row['uid'].'">'.$row['username'].'</a><hr>';
+		}
+	}
 	$mysqli->close();
 ?>
