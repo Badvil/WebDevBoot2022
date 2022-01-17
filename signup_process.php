@@ -13,7 +13,7 @@
 		exit_process();
     }
 	
-    $username = trim(strtolower($_POST['username']));
+    $username = trim($_POST['username']);
 	$email = trim($_POST['email']);
 	
 	if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
@@ -29,7 +29,7 @@
       exit_process();
     }
 	
-	$testUsername = sprintf("SELECT uid FROM Users WHERE LOWER(username) LIKE '%s';",
+	$testUsername = sprintf("SELECT uid FROM Users WHERE LOWER(username) LIKE LOWER('%s');",
 		$SQLi->real_escape_string($username));
 	$result = $SQLi -> query($testUsername);
 	

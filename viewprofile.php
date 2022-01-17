@@ -12,15 +12,16 @@
 	$profileid = $_GET['user'];
 	
 	session_start();
-	
 	$uid = 'Guest'; 
-	
 	if(isset($_SESSION['uid'])){
 		$uid = $_SESSION['uid'];
 	} 
-	
 	$_SESSION['uid'] = $uid;
 	
+	if($uid == $profileid){
+		header('Location: editprofile.php');
+	}
+	echo '<a href="home.php">home</a><br><br>';
 	
 	$mysqli = new mysqli("localhost", "root", "password", "MyDatabase");
 	

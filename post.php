@@ -3,6 +3,19 @@
 	
 	// to display a specific post, the url should look like post.php?postid=x
 	// with x being the postid number, the db is populated with ids 1, 2, 3
+	session_start();
+	$uid = 'Guest'; 
+	if(isset($_SESSION['uid'])){
+		$uid = $_SESSION['uid'];
+	} 
+	$_SESSION['uid'] = $uid;
+	
+	if(strcmp($uid, 'Guest') == 0){
+		header('Location: loginpage.html');
+	}
+	
+	echo '<a href="home.php">home</a><br><br>';
+	echo '<a href="logout_process.php">logout</a><br>';
 	
 	if(empty($_GET['postid']) or !is_numeric($_GET['postid'])){
 		echo 'no post found';
@@ -10,15 +23,7 @@
 	}
 	$postid = $_GET['postid'];
 	
-	session_start();
-	$uid = 'Guest'; // for the uid we should set it to the number given from the user table
-	
-	if(isset($_SESSION['uid'])){
-		$uid = $_SESSION['uid'];
-	} 
-	$_SESSION['uid'] = $uid;
-	
-	$mysqli = new mysqli("localhost", "root", "password", "MyDatabase");
+	$mysqli = new mysqli("localhost", "root", "password", "MyDatabase"); 
 	if($mysqli -> connect_erno){
 		echo 'failed to connect to MySQL '.$mysqli -> connect_error;
 		exit();
